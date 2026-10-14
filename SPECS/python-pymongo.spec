@@ -22,7 +22,7 @@
 
 Name:           python-pymongo
 Version:        3.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 # All code is ASL 2.0 except bson/time64*.{c,h} which is MIT
 License:        ASL 2.0 and MIT
@@ -38,6 +38,8 @@ ExclusiveArch:  %{mongodb_arches}
 # standard library. It also adjusts imports so that they exclusively use the code from Python.
 Patch01:        0001-Use-ssl.match_hostname-from-the-Python-stdlib.patch
 Patch02:	pymongo-CVE-2024-5629.patch
+# https://github.com/mongodb/mongo-python-driver/commit/fa676586ba4b399168a4d1d41c30dc2166cc44fd
+Patch03:	pymongo-CVE-2026-88029.patch
 
 %if %{with tests}
 %ifnarch armv7hl ppc64 s390 s390x
@@ -164,6 +166,7 @@ contains the python3 version of this module.
 %setup -q -n mongo-python-driver-%{version}
 %patch01 -p1 -b .ssl
 %patch02 -p1
+%patch03 -p1
 
 # Remove the bundled ssl.match_hostname library as it was vulnerable to CVE-2013-7440
 # and CVE-2013-2099, and isn't needed anyway since Fedora >= 22 has the needed module in the Python
@@ -287,6 +290,9 @@ pkill mongod
 
 
 %changelog
+* Wed Sep 23 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 3.7.0-3
+- Backport CVE-2026-88029
+
 * Fri Apr 04 2025 Filip Janus <fjanus@redhat.com> - 3.7.0-2
 - Backport CVE-2024-5629
 
