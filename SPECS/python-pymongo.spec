@@ -22,7 +22,7 @@
 
 Name:           python-pymongo
 Version:        3.7.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 # All code is ASL 2.0 except bson/time64*.{c,h} which is MIT
 License:        ASL 2.0 and MIT
@@ -40,6 +40,8 @@ Patch01:        0001-Use-ssl.match_hostname-from-the-Python-stdlib.patch
 Patch02:	pymongo-CVE-2024-5629.patch
 # https://github.com/mongodb/mongo-python-driver/commit/fa676586ba4b399168a4d1d41c30dc2166cc44fd
 Patch03:	pymongo-CVE-2026-88029.patch
+# https://github.com/mongodb/mongo-python-driver/commit/6ab44be0e97c9d1d5a23725c4978fb25f3249485
+Patch04:	pymongo-CVE-2026-96749.patch
 
 %if %{with tests}
 %ifnarch armv7hl ppc64 s390 s390x
@@ -167,6 +169,7 @@ contains the python3 version of this module.
 %patch01 -p1 -b .ssl
 %patch02 -p1
 %patch03 -p1
+%patch04 -p1
 
 # Remove the bundled ssl.match_hostname library as it was vulnerable to CVE-2013-7440
 # and CVE-2013-2099, and isn't needed anyway since Fedora >= 22 has the needed module in the Python
@@ -290,6 +293,10 @@ pkill mongod
 
 
 %changelog
+* Thu Nov 05 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 3.7.0-4
+- CVE-2026-96749 python36:3.6/python-pymongo: pymongo: Out-of-bounds write via integer overflow during BSON encoding
+  write via integer overflow during BSON encoding
+
 * Wed Sep 23 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 3.7.0-3
 - Backport CVE-2026-88029
 
